@@ -37,8 +37,6 @@ include $(CLEAR_VARS)
 LOCAL_MODULE := libva
 LOCAL_MODULE_CLASS := SHARED_LIBRARIES
 
-generated_sources_dir := $(call local-generated-sources-dir)
-
 LOCAL_SRC_FILES := \
 	va.c \
 	va_trace.c \
@@ -52,7 +50,7 @@ LOCAL_CFLAGS := \
 	-DLOG_TAG=\"libva\" \
 	-DANDROID_ALOG
 
-LOCAL_EXPORT_C_INCLUDE_DIRS := $(LOCAL_PATH)/.. $(generated_sources_dir)
+LOCAL_EXPORT_C_INCLUDE_DIRS := $(LOCAL_PATH)/..
 
 LOCAL_C_INCLUDES := \
 	$(TARGET_OUT_HEADERS)/libva \
@@ -80,7 +78,7 @@ LOCAL_CFLAGS += -Werror
 
 LOCAL_SHARED_LIBRARIES := libdl libdrm libcutils liblog
 
-GEN := $(generated_sources_dir)/va/va_version.h
+GEN := $(TARGET_OUT_HEADERS)/libva/va/va_version.h
 $(GEN): SCRIPT := $(LOCAL_PATH)/../build/gen_version.sh
 $(GEN): PRIVATE_PATH := $(LOCAL_PATH)
 $(GEN): PRIVATE_CUSTOM_TOOL = /bin/bash $(SCRIPT) $(PRIVATE_PATH)/.. $(PRIVATE_PATH)/va_version.h.in > $@
@@ -89,11 +87,6 @@ $(GEN): $(LOCAL_PATH)/va_version.h.in $(LOCAL_PATH)/../build/gen_version.sh $(LO
 LOCAL_GENERATED_SOURCES := $(GEN)
 
 include $(BUILD_SHARED_LIBRARY)
-
-my_header := $(TARGET_OUT_HEADERS)/libva/va/va_version.h
-ALL_COPIED_HEADERS.$(my_header).MAKEFILE += $(my_header)
-ALL_COPIED_HEADERS.$(my_header).SRC += $(GEN)
-ALL_COPIED_HEADERS += $(my_header)
 
 # For libva-android
 # =====================================================
